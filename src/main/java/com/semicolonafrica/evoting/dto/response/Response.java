@@ -7,4 +7,5 @@ import org.springframework.http.HttpStatus;
 public class Response {
     private HttpStatus status;
     private String message;
+    private Long id;
 }
