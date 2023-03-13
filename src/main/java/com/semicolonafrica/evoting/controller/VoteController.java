@@ -1,5 +1,6 @@
 package com.semicolonafrica.evoting.controller;
 
+import com.semicolonafrica.evoting.dto.request.IncreaseCandidateVoteRequest;
 import com.semicolonafrica.evoting.dto.request.VoteRequest;
 import com.semicolonafrica.evoting.services.CandidateService;
 import com.semicolonafrica.evoting.services.NonCandidateService;
@@ -43,6 +44,30 @@ public class VoteController {
                                             HttpServletRequest httpServletRequest){
         ApiResponse response = ApiResponse.builder()
                 .data(candidateService.vote(voteRequest))
+                .statusCode(HttpStatus.OK)
+                .timeStamp(ZonedDateTime.now())
+                .path(httpServletRequest.getRequestURI())
+                .isSuccessful(true)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PostMapping("voting")
+    public ResponseEntity<ApiResponse> voting(@RequestBody IncreaseCandidateVoteRequest increaseCandidateVoteRequest,
+                                              HttpServletRequest httpServletRequest){
+        ApiResponse response = ApiResponse.builder()
+                .data(nonCandidateService.addVote(increaseCandidateVoteRequest))
+                .statusCode(HttpStatus.OK)
+                .timeStamp(ZonedDateTime.now())
+                .path(httpServletRequest.getRequestURI())
+                .isSuccessful(true)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PostMapping("candidateVoting")
+    public ResponseEntity<ApiResponse> candidateVoting(@RequestBody IncreaseCandidateVoteRequest increaseCandidateVoteRequest,
+                                                       HttpServletRequest httpServletRequest){
+        ApiResponse response = ApiResponse.builder()
+                .data(candidateService.addVote(increaseCandidateVoteRequest))
                 .statusCode(HttpStatus.OK)
                 .timeStamp(ZonedDateTime.now())
                 .path(httpServletRequest.getRequestURI())
