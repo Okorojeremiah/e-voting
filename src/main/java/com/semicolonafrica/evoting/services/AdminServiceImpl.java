@@ -65,10 +65,12 @@ public class AdminServiceImpl implements AdminService{
         candidate.setToken(token);
         candidate.setEmail(addCandidateRequest.getEmail());
         candidateService.addCandidate(candidate);
-
         emailSenderService.send(addCandidateRequest.getEmail(), buildEmail(addCandidateRequest.getEmail(), token));
-        AddCandidateResponse response = getAddCandidateResponse();
-        return response;
+        AddCandidateResponse addCandidateResponse = new AddCandidateResponse();
+        addCandidateResponse.setId(candidate.getId());
+        addCandidateResponse.setStatus(HttpStatus.CREATED);
+        addCandidateResponse.setMessage("Candidate added successfully");
+        return addCandidateResponse;
     }
 
     @Override
@@ -80,10 +82,13 @@ public class AdminServiceImpl implements AdminService{
         nonCandidate.setToken(token);
         nonCandidate.setEmail(addNonCandidateRequest.getEmail());
         nonCandidateService.addNonCandidate(nonCandidate);
-
         emailSenderService.send(addNonCandidateRequest.getEmail(), buildEmail(addNonCandidateRequest.getEmail(), token));
-        AddNonCandidateResponse response = getAddNonCandidateResponse();
-        return response;
+        AddNonCandidateResponse addNonCandidateResponse = new AddNonCandidateResponse();
+        addNonCandidateResponse.setId(nonCandidate.getId());
+        addNonCandidateResponse.setStatus(HttpStatus.CREATED);
+        addNonCandidateResponse.setMessage("NonCandidate added successfully");
+        return addNonCandidateResponse;
+
     }
 
     @Override
@@ -91,18 +96,18 @@ public class AdminServiceImpl implements AdminService{
         return candidateService.findAllCandidates();
     }
 
-    private AddCandidateResponse getAddCandidateResponse() {
-        AddCandidateResponse addCandidateResponse = new AddCandidateResponse();
-        addCandidateResponse.setStatus(HttpStatus.CREATED);
-        addCandidateResponse.setMessage("Candidate added successfully");
-        return addCandidateResponse;
-    }
-    private AddNonCandidateResponse getAddNonCandidateResponse() {
-        AddNonCandidateResponse addNonCandidateResponse = new AddNonCandidateResponse();
-        addNonCandidateResponse.setStatus(HttpStatus.CREATED);
-        addNonCandidateResponse.setMessage("NonCandidate added successfully");
-        return addNonCandidateResponse;
-    }
+//    private AddCandidateResponse getAddCandidateResponse() {
+//        AddCandidateResponse addCandidateResponse = new AddCandidateResponse();
+//        addCandidateResponse.setStatus(HttpStatus.CREATED);
+//        addCandidateResponse.setMessage("Candidate added successfully");
+//        return addCandidateResponse;
+//    }
+//    private AddNonCandidateResponse getAddNonCandidateResponse() {
+//        AddNonCandidateResponse addNonCandidateResponse = new AddNonCandidateResponse();
+//        addNonCandidateResponse.setStatus(HttpStatus.CREATED);
+//        addNonCandidateResponse.setMessage("NonCandidate added successfully");
+//        return addNonCandidateResponse;
+//    }
 
     private void validateCandidate(AddCandidateRequest addCandidateRequest) {
         if (candidateService.candidateExists(addCandidateRequest.getEmail()))
@@ -113,6 +118,7 @@ public class AdminServiceImpl implements AdminService{
         if (nonCandidateService.voterExists(addNonCandidateRequest.getEmail()))
             throw new UserExistsException("NonCandidate exists");
     }
+
 
 
     private String generateToken() {
